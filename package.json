@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Joao20037/SPAD02-BackEnd/issues"
   },
-  "homepage": "https://github.com/Joao20037/SPAD02-BackEnd#readme"
+  "homepage": "https://github.com/Joao20037/SPAD02-BackEnd#readme",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
 }
