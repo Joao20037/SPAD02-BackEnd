@@ -1,0 +1,19 @@
+{
+  "name": "spad02-backend",
+  "version": "1.0.0",
+  "description": "Trabalho Prático Banco de Dados II - SPAD02",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Joao20037/SPAD02-BackEnd.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Joao20037/SPAD02-BackEnd/issues"
+  },
+  "homepage": "https://github.com/Joao20037/SPAD02-BackEnd#readme"
+}
