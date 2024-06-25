@@ -1,0 +1,16 @@
+{
+  "name": "ad-hoc-sql",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "client-dev": "npm run dev --workspace client",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "workspaces": [
+    "client"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
