@@ -8,9 +8,11 @@ app.get('/', (req, res) => {
 
 //definindo rotas
 const routeTeste = require("./routes/routeTeste");
+const Query = require("./routes/query");
 
 // atribuindo rotas
 app.use('/test', routeTeste);
+app.use('/query', Query);
 
 // porta que vai ser usada
 const port = process.env.PORT || 3000;

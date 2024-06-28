@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Joao20037/SPAD02-BackEnd#readme",
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "joi": "^17.13.3"
   }
 }
