@@ -3,7 +3,9 @@ const router = express.Router()
 
 // route url/test/
 router.get('/', (req, res) => {
-    res.send("<h1>Route teste page</h1>");
+    const json_send = {id:10};
+    res.json(json_send);
+    console.log(json_send);
 });
 
 
