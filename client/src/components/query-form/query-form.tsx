@@ -4,7 +4,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { FilterComponent } from "./filter/filter-component";
 import { CoreAttributesComponent } from "./core-attributes/core-attributes-component";
 import { AggregationComponent } from "./aggregation/aggregation-component";
-import { IRequestWS } from "../../web/interface";
+import { IRequestWS, IResponseWS } from "../../web/interface";
 
 type FilterComponentsProps = {
   id: string;
@@ -13,7 +13,11 @@ type FilterComponentsProps = {
   operation: string;
 };
 
-export function QueryForm() {
+export function QueryForm({
+  setTableContent
+}: {
+  setTableContent: (value: IResponseWS['tableContent']) => void
+}) {
   const [baseTableState, setBaseTable] = useState("");
   const [relativesTablesState, setRelativesTables] = useState<string[]>([]);
   const [columnsState, setColumns] = useState<string[]>([]);
@@ -153,16 +157,37 @@ export function QueryForm() {
       baseTable: baseTableState,
       columns: columnsState,
       tables: relativesTablesState,
-      aggregation: aggregationState,
-      aggregationColumn: aggregationColumnState,
-      filter: filterComponents.map((props) => {
-        return {
-          column: props.column,
-          [props.operation]: props.value,
-        };
-      }),
+      aggregation: aggregationState || undefined,
+      aggregationColumn: aggregationColumnState || undefined,
+      filter:
+        filterComponents.length === 0
+          ? undefined
+          : filterComponents.map((props) => {
+              return {
+                column: props.column,
+                [props.operation]: props.value,
+              };
+            }),
     };
+
     console.log(payload);
+
+    fetch("http://localhost:3000/query", {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    }).then((rawRes) =>
+      rawRes.json().then((res: IResponseWS) => {
+        console.log(res);
+
+          if(rawRes.status === 200) {
+            setTableContent(res.tableContent);
+          }
+      })
+    );
   };
 
   return (
@@ -181,7 +206,7 @@ export function QueryForm() {
 
           <AggregationComponent
             aggregationState={aggregationState}
-            selectedColumns={selectedTables}
+            selectedColumns={columnsState}
             aggregationColumnState={aggregationColumnState}
             setAggregation={setAggregation}
             setAggregationColumn={setAggregationColumn}

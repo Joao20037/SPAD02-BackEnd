@@ -29,6 +29,7 @@ export function AggregationSelect({
         label="Agregação"
         onChange={onValueChange}
       >
+        <MenuItem value={""}></MenuItem>
         <MenuItem value={"sum"}>Sum</MenuItem>
         <MenuItem value={"avg"}>Avg</MenuItem>
         <MenuItem value={"count"}>Count</MenuItem>

@@ -1,12 +1,17 @@
+import { useState } from "react";
 import { QueryForm } from "./components/query-form/query-form";
 import { ReportTable } from "./components/report-table";
-import { ADHOC_MOCK } from "./mock";
+import { IResponseWS } from "./web/interface";
 
 function App() {
+  const [tableContent, setTableContent] = useState<IResponseWS["tableContent"]>(
+    { headers: [], rows: [] }
+  );
+
   return (
     <>
-      <QueryForm />
-      <ReportTable content={ADHOC_MOCK.tableContent.rows} headers={ADHOC_MOCK.tableContent.headers}/>
+      <QueryForm setTableContent={setTableContent} />
+      <ReportTable content={tableContent.rows} headers={tableContent.headers} />
     </>
   );
 }
