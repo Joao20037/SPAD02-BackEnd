@@ -1,16 +1,28 @@
 {
-  "name": "ad-hoc-sql",
+  "name": "spad02-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Trabalho Prático Banco de Dados II - SPAD02",
   "main": "index.js",
   "scripts": {
     "client-dev": "npm run dev --workspace client",
+    "start-server": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Joao20037/SPAD02-BackEnd.git"
   },
   "workspaces": [
     "client"
   ],
-  "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Joao20037/SPAD02-BackEnd/issues"
+  },
+  "homepage": "https://github.com/Joao20037/SPAD02-BackEnd#readme",
+  "dependencies": {
+    "express": "^4.19.2",
+    "joi": "^17.13.3"
+  }
 }
