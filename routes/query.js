@@ -15,8 +15,14 @@ const dynamicQuery = (requestData) => {
     const { baseTable, tables, columns, aggregation, aggregationColumn, filter } = requestData;
     console.log("Aopa");
 
+    const allColumns = [...columns];
+    if (aggregationColumn && !allColumns.includes(aggregationColumn)) {
+        allColumns.push(aggregationColumn);
+    }
+
     // base da query, primeiro FROM
-    let query = `SELECT ${columns.join(', ')} FROM ${baseTable}`;
+    let query = `SELECT ${allColumns.join(', ')} FROM ${baseTable}`;
+
 
     // joins
     if (tables && tables.length > 0) {
@@ -77,6 +83,10 @@ router.post('/', async (req, res) => {
         console.log(query);
 
         const [rows, fields] = await pool.query(query);
+
+        if (rows.length === 0) {
+            return res.json({ message: 'Nenhum resultado encontrado.' });
+        }
 
         const responseData = {
         tableContent: {
