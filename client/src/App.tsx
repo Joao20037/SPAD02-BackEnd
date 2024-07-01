@@ -1,4 +1,4 @@
-import { QueryForm } from "./components/query-form";
+import { QueryForm } from "./components/query-form/query-form";
 import { ReportTable } from "./components/report-table";
 import { ADHOC_MOCK } from "./mock";
 

@@ -30,7 +30,7 @@ export function ReportTable({
         <TableBody>
           {content.map((row) => {
             rowsKey++;
-            
+
             return (
               <TableRow
                 key={rowsKey}
@@ -49,18 +49,3 @@ export function ReportTable({
     </TableContainer>
   );
 }
-
-// (
-//   <TableRow
-//     key={row.name}
-//     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-//   >
-//     <TableCell component="th" scope="row">
-//       {row.name}
-//     </TableCell>
-//     <TableCell align="right">{row.calories}</TableCell>
-//     <TableCell align="right">{row.fat}</TableCell>
-//     <TableCell align="right">{row.carbs}</TableCell>
-//     <TableCell align="right">{row.protein}</TableCell>
-//   </TableRow>
-// )

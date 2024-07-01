@@ -47,7 +47,7 @@ export function ColumnsSelect({
     avaibleColumns.push(
       ...columnsMap[table].map(column => {
         return {
-          key: column,
+          key: `${table}.${column}`,
           label: `(${table}) ${column}`
         }
       })
