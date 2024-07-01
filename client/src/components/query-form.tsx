@@ -1,13 +1,13 @@
-import { Box, Button, FormGroup, IconButton } from "@mui/material";
-import { BaseTableSelect } from "../query-form/base-table-select";
-import { RelativeTablesSelect } from "../query-form/relative-tables-select";
+import { Box, Button, FormGroup, IconButton, Stack } from "@mui/material";
+import { BaseTableSelect } from "./form-fields/base-table-select";
+import { RelativeTablesSelect } from "./form-fields/relative-tables-select";
 import { useEffect, useState } from "react";
-import { ColumnsSelect } from "../query-form/columns-select";
-import { AggregationSelect } from "../query-form/agregation-select";
-import { ColumnAggregationSelect } from "../query-form/column-aggregation-select";
-import { FilterSelect } from "../query-form/filter-select";
-import { FilterColumnSelect } from "../query-form/filter-column";
-import { FilterValueInput } from "../query-form/filter-value-input";
+import { ColumnsSelect } from "./form-fields/columns-select";
+import { AggregationSelect } from "./form-fields/agregation-select";
+import { ColumnAggregationSelect } from "./form-fields/column-aggregation-select";
+import { FilterSelect } from "./form-fields/filter-select";
+import { FilterColumnSelect } from "./form-fields/filter-column";
+import { FilterValueInput } from "./form-fields/filter-value-input";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 
@@ -26,7 +26,7 @@ export function QueryForm() {
   const [aggregationColumnState, setAggregationColumn] = useState("");
   const [filterComponents, setFilterComponents] = useState<
     FilterComponentsProps[]
-  >([]);
+  >([{ id: Date.now().toString(), column: "", value: "", operation: "" }]);
 
   useEffect(() => {
     setRelativesTables([]);
@@ -115,8 +115,8 @@ export function QueryForm() {
   };
 
   return (
-    <FormGroup>
-      <Box component="section">
+    <Box component="section">
+      <Stack direction="row">
         <BaseTableSelect
           baseTableState={baseTableState}
           updateStateFn={setBaseTable}
@@ -161,13 +161,13 @@ export function QueryForm() {
             removeFn={() => removeFilterForm(id)}
           />
         ))}
-
         <IconButton onClick={addFilterForm}>
           <AddCircleIcon />
         </IconButton>
-      </Box>
-      <Button onClick={() => submitForm()}>Enviar</Button>
-    </FormGroup>
+      </Stack>
+
+      <Button variant="contained" onClick={() => submitForm()}>Enviar</Button>
+    </Box>
   );
 }
 

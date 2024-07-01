@@ -73,7 +73,7 @@ export function ColumnsSelect({
         {avaibleColumns &&
           avaibleColumns.length > 0 &&
           avaibleColumns.map(({ key, label }) => (
-            <MenuItem key={key} value={key}>
+            <MenuItem key={label} value={key}>
               <Checkbox checked={columns.indexOf(key) > -1} />
               <ListItemText primary={label} />
             </MenuItem>
