@@ -73,6 +73,8 @@ router.post('/', async (req, res) => {
     console.log("Corpo da requisição:", req.body);
     const { error, value: requestData } = requestWSSchema.validate(req.body);
 
+    res.set('Access-Control-Allow-Origin', '*')
+
     if (error) {
         return res.status(400).json({ error: error.details[0].message });
     }
@@ -95,11 +97,11 @@ router.post('/', async (req, res) => {
         }
         };
 
-        const { error: responseError } = responseWSSchema.validate(responseData);
-        if (responseError) {
-        console.error('Invalid response data:', responseError.details[0].message);
-        return res.status(500).json({ error: 'Internal Server Error' });
-        }
+        // const { error: responseError } = responseWSSchema.validate(responseData);
+        // if (responseError) {
+        // console.error('Invalid response data:', responseError.details[0].message);
+        // return res.status(500).json({ error: 'Internal Server Error' });
+        // }
 
         res.json(responseData);
     } catch (err) {
