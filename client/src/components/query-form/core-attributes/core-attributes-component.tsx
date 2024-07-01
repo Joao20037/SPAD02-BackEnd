@@ -7,7 +7,7 @@ export function CoreAttributesComponent({
   baseTableState,
   relativesTablesState,
   columnsState,
-  selectedTables,
+  avaibleColumns,
   setBaseTable,
   setRelativesTables,
   setColumns,
@@ -15,7 +15,7 @@ export function CoreAttributesComponent({
   baseTableState: string;
   relativesTablesState: string[];
   columnsState: string[];
-  selectedTables: string[];
+  avaibleColumns: { key: string; label: string }[];
   setBaseTable: (value: string) => void;
   setRelativesTables: (value: string[]) => void;
   setColumns: (value: string[]) => void;
@@ -36,7 +36,7 @@ export function CoreAttributesComponent({
 
         <ColumnsSelect
           columns={columnsState}
-          selectedTables={selectedTables}
+          avaibleColumns={avaibleColumns}
           updateStateFn={setColumns}
         />
       </Stack>

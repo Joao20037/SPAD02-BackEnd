@@ -19,19 +19,13 @@ const MenuProps = {
   },
 };
 
-const columnsMap: Record<string, string[]> = {
-  profile: ["id", "first_name", "last_name", "full_name", "city", "state", "languages", "school", "company_id"],
-  company: ["company_id", "name", "description", "company_size", "country", "state", "city", "zip_code", "adress", "url"],
-  job: ["id", "job_id", "company_id", "title", "description", "location", "med_salary", "remote_allowed", "work_type", "application_url", "expiry"]
-};
-
 export function ColumnsSelect({
   columns,
-  selectedTables,
-  updateStateFn
+  avaibleColumns,
+  updateStateFn,
 }: {
-  columns: string[]
-  selectedTables: string[];
+  columns: string[];
+  avaibleColumns: {key: string, label: string}[];
   updateStateFn: (columns: string[]) => void;
 }) {
   const onValueChange = (event: SelectChangeEvent<typeof columns>) => {
@@ -42,18 +36,6 @@ export function ColumnsSelect({
     updateStateFn(typeof value === "string" ? value.split(",") : value);
   };
 
-  const avaibleColumns: {key: string, label: string}[] = []
-  for (const table of selectedTables) {
-    avaibleColumns.push(
-      ...columnsMap[table].map(column => {
-        return {
-          key: `${table}.${column}`,
-          label: `(${table}) ${column}`
-        }
-      })
-    );
-  }
-
   return (
     <FormControl
       sx={{ m: 1, minWidth: 120 }}
@@ -62,6 +44,8 @@ export function ColumnsSelect({
     >
       <InputLabel id="relative-tables">Colunas</InputLabel>
       <Select
+        sx={{}}
+        autoWidth={false}
         labelId="relative-tables-label"
         id="relative-tables"
         multiple

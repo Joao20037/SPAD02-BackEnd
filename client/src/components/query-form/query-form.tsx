@@ -35,14 +35,64 @@ export function QueryForm() {
     setAggregationColumn("");
   }, [columnsState]);
 
-  const selectedTables: string[] = [];
+  const columnsMap: Record<string, string[]> = {
+    profile: [
+      "id",
+      "first_name",
+      "last_name",
+      "full_name",
+      "city",
+      "state",
+      "languages",
+      "school",
+      "company_id",
+    ],
+    company: [
+      "company_id",
+      "name",
+      "description",
+      "company_size",
+      "country",
+      "state",
+      "city",
+      "zip_code",
+      "adress",
+      "url",
+    ],
+    job: [
+      "id",
+      "job_id",
+      "company_id",
+      "title",
+      "description",
+      "location",
+      "med_salary",
+      "remote_allowed",
+      "work_type",
+      "application_url",
+      "expiry",
+    ],
+  };
 
+  const selectedTables: string[] = [];
   if (baseTableState) {
     selectedTables.push(baseTableState);
   }
 
   if (relativesTablesState.length > 0) {
     selectedTables.push(...relativesTablesState);
+  }
+
+  const avaibleColumns: { key: string; label: string }[] = [];
+  for (const table of selectedTables) {
+    avaibleColumns.push(
+      ...columnsMap[table].map((column) => {
+        return {
+          key: `${table}.${column}`,
+          label: `(${table}) ${column}`,
+        };
+      })
+    );
   }
 
   const addFilterForm = () => {
@@ -110,8 +160,7 @@ export function QueryForm() {
           column: props.column,
           [props.operation]: props.value,
         };
-      })
-
+      }),
     };
     console.log(payload);
   };
@@ -124,7 +173,7 @@ export function QueryForm() {
             baseTableState={baseTableState}
             relativesTablesState={relativesTablesState}
             columnsState={columnsState}
-            selectedTables={selectedTables}
+            avaibleColumns={avaibleColumns}
             setBaseTable={setBaseTable}
             setRelativesTables={setRelativesTables}
             setColumns={setColumns}
@@ -132,7 +181,7 @@ export function QueryForm() {
 
           <AggregationComponent
             aggregationState={aggregationState}
-            selectedColumns={columnsState}
+            selectedColumns={selectedTables}
             aggregationColumnState={aggregationColumnState}
             setAggregation={setAggregation}
             setAggregationColumn={setAggregationColumn}
@@ -144,8 +193,8 @@ export function QueryForm() {
           <Stack direction="row">
             {filterComponents.map(({ id, column, value, operation }) => (
               <FilterComponent
-                selectedColumns={columnsState}
-                disabled={columnsState.length === 0}
+                avaibleColumns={avaibleColumns}
+                disabled={avaibleColumns.length === 0}
                 key={id}
                 columnState={column}
                 operationState={operation}
