@@ -1,108 +1,86 @@
 const express = require("express");
 const router = express.Router();
 const { requestWSSchema, responseWSSchema } = require('../validators/validation');
-const mysql = require('mysql2/promise');
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
-const pool = mysql.createPool({
-    host: '25.59.203.106',
-    user: 'unifei',
-    database: 'linkedin_data',
-    password: 'unifei',
-    port: 3306,
-});
 
-const dynamicQuery = (requestData) => {
+const dynamicQuery = async (requestData) => {
     const { baseTable, tables, columns, aggregation, aggregationColumn, filter } = requestData;
-    console.log("Aopa");
 
-    const allColumns = [...columns];
-    if (aggregationColumn && !allColumns.includes(aggregationColumn)) {
-        allColumns.push(aggregationColumn);
-    }
+    // Base query
+    let query = prisma[baseTable].findMany({
+        select: columns.reduce((acc, column) => {
+            acc[column] = true;
+            return acc;
+        }, {})
+    });
 
-    // base da query, primeiro FROM
-    let query = `SELECT /* +MAX_EXECUTION_TIME(12000000) */ ${allColumns.join(', ')} FROM ${baseTable}`;
-
-
-    // joins
+    // Joins
     if (tables && tables.length > 0) {
         tables.forEach(table => {
             if (table === 'company') {
-                query += ` JOIN company ON ${baseTable}.company_id = company.id`;
+                query.include = { company: true };
             } else if (table === 'job') {
-                if (baseTable === 'company'){
-                    query += ` JOIN job ON ${baseTable}.id = job.company_id`;
-                } else {
-                    query += ` JOIN job ON ${baseTable}.company_id = job.company_id`;
-                }
+                query.include = { job: true };
             } else if (table === 'profile') {
-                if (baseTable === 'company'){
-                    query += ` JOIN profile ON ${baseTable}.id = profile.company_id`;
-                } else {
-                    query += ` JOIN profile ON ${baseTable}.company_id = profile.company_id`; // Alsip, IL
-                }
+                query.include = { profile: true };
             }
         });
     }
 
-    // filtros
+    // Filters
     if (filter && filter.length > 0) {
-        const filterConditions = filter.map(f => {
-            const conditions = [];
-            if (f.gt !== undefined) conditions.push(`${f.column} > ${f.gt}`); // maior que
-            if (f.gte !== undefined) conditions.push(`${f.column} >= ${f.gte}`); // maior ou igual que
-            if (f.lt !== undefined) conditions.push(`${f.column} < ${f.lt}`); // menor que
-            if (f.lte !== undefined) conditions.push(`${f.column} <= ${f.lte}`); // menor ou igual que
-            if (f.equal !== undefined) conditions.push(`${f.column} = '${f.equal}'`); // igual
-            return conditions.join(' AND ');
-        });
-        query += ` WHERE ${filterConditions.join(' AND ')}`;
+        query.where = filter.reduce((acc, f) => {
+            if (f.gt !== undefined) acc[f.column] = { gt: f.gt };
+            if (f.gte !== undefined) acc[f.column] = { gte: f.gte };
+            if (f.lt !== undefined) acc[f.column] = { lt: f.lt };
+            if (f.lte !== undefined) acc[f.column] = { lte: f.lte };
+            if (f.equal !== undefined) acc[f.column] = f.equal;
+            return acc;
+        }, {});
     }
 
-    // agregação
+    // Aggregation
     if (aggregation && aggregationColumn) {
         const aggregationColumnAlias = aggregationColumn.split('.').pop();
-        query = `SELECT ${aggregation}(subquery.${aggregationColumnAlias}) AS result FROM (${query}) AS subquery`;
+        const result = await prisma[baseTable].aggregate({
+            _count: { [aggregationColumnAlias]: true },
+            _sum: { [aggregationColumnAlias]: true },
+            _avg: { [aggregationColumnAlias]: true },
+            _min: { [aggregationColumnAlias]: true },
+            _max: { [aggregationColumnAlias]: true },
+        });
+        return result;
     }
 
-    return query;
+    return prisma[baseTable].findMany(query);
 };
 
 router.post('/', async (req, res) => {
-    //console.log("to aqui");
-    //console.log("Corpo da requisição:", req.body);
     const { error, value: requestData } = requestWSSchema.validate(req.body);
 
-    res.set('Access-Control-Allow-Origin', '*')
+    res.set('Access-Control-Allow-Origin', '*');
 
     if (error) {
         return res.status(400).json({ error: error.details[0].message });
     }
 
     try {
-        console.log("eu tentei");
-        const query = dynamicQuery(requestData);
-        console.log(query);
-
-        const [rows, fields] = await pool.query(query);
+        const rows = await dynamicQuery(requestData);
 
         if (rows.length === 0) {
             return res.json({ message: 'Nenhum resultado encontrado.' });
         }
 
-        console.log('rows is: ', rows)
-        console.log("fields is: ", fields)
-
         const responseData = {
-        tableContent: {
-            headers: fields.map(field => {
-                return {
-                    key: field.name,
-                    label: `${field.table}.${field.name}`
-                }
-            }),
-            rows: rows
-        }
+            tableContent: {
+                headers: Object.keys(rows[0]).map(key => ({
+                    key: key,
+                    label: `${baseTable}.${key}`
+                })),
+                rows: rows
+            }
         };
 
         res.json(responseData);
