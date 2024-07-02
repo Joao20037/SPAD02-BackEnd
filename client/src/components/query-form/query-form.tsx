@@ -52,7 +52,7 @@ export function QueryForm({
       "company_id",
     ],
     company: [
-      "company_id",
+      "id",
       "name",
       "description",
       "company_size",
@@ -60,7 +60,7 @@ export function QueryForm({
       "state",
       "city",
       "zip_code",
-      "adress",
+      "address",
       "url",
     ],
     job: [
@@ -181,8 +181,6 @@ export function QueryForm({
       },
     }).then((rawRes) =>
       rawRes.json().then((res: IResponseWS) => {
-        console.log(res);
-
           if(rawRes.status === 200) {
             setTableContent(res.tableContent);
           }
@@ -237,7 +235,7 @@ export function QueryForm({
           </Stack>
         </Box>
       </Box>
-      <Button variant="contained" onClick={() => submitForm()}>
+      <Button sx={{margin: "1rem 0"}} variant="contained" onClick={() => submitForm()}>
         Enviar
       </Button>
     </>

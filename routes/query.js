@@ -21,7 +21,7 @@ const dynamicQuery = (requestData) => {
     }
 
     // base da query, primeiro FROM
-    let query = `SELECT ${allColumns.join(', ')} FROM ${baseTable}`;
+    let query = `SELECT /* +MAX_EXECUTION_TIME(12000000) */ ${allColumns.join(', ')} FROM ${baseTable}`;
 
 
     // joins

@@ -32,6 +32,8 @@ export function AggregationSelect({
         <MenuItem value={""}></MenuItem>
         <MenuItem value={"sum"}>Sum</MenuItem>
         <MenuItem value={"avg"}>Avg</MenuItem>
+        <MenuItem value={"min"}>Min</MenuItem>
+        <MenuItem value={"max"}>Max</MenuItem>
         <MenuItem value={"count"}>Count</MenuItem>
       </Select>
     </FormControl>

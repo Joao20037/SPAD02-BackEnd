@@ -38,7 +38,7 @@ export function ColumnsSelect({
 
   return (
     <FormControl
-      sx={{ m: 1, minWidth: 120 }}
+      sx={{ m: 1, maxWidth: 160, minWidth: 120 }}
       size="medium"
       disabled={avaibleColumns.length === 0}
     >
