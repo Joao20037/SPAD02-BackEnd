@@ -4,7 +4,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { FilterComponent } from "./filter/filter-component";
 import { CoreAttributesComponent } from "./core-attributes/core-attributes-component";
 import { AggregationComponent } from "./aggregation/aggregation-component";
-import { IRequestWS, IResponseWS } from "../../web/interface";
+import { Filter, IRequestWS, IResponseWS } from "../../web/interface";
 
 type FilterComponentsProps = {
   id: string;
@@ -14,9 +14,9 @@ type FilterComponentsProps = {
 };
 
 export function QueryForm({
-  setTableContent
+  setTableContent,
 }: {
-  setTableContent: (value: IResponseWS['tableContent']) => void
+  setTableContent: (value: IResponseWS["tableContent"]) => void;
 }) {
   const [baseTableState, setBaseTable] = useState("");
   const [relativesTablesState, setRelativesTables] = useState<string[]>([]);
@@ -153,6 +153,18 @@ export function QueryForm({
   };
 
   const submitForm = () => {
+    const filtered = filterComponents.map((item) => {
+      if (item.column !== "" && item.operation !== "" && item.value !== ""){
+        return {
+          column: item.column,
+          [item.operation] : item.value
+        }
+      }
+    })
+
+
+    const correctFiltered = filtered.filter((item) => item !== undefined)
+  
     const payload: IRequestWS = {
       baseTable: baseTableState,
       columns: columnsState,
@@ -160,14 +172,9 @@ export function QueryForm({
       aggregation: aggregationState || undefined,
       aggregationColumn: aggregationColumnState || undefined,
       filter:
-        filterComponents.length === 0
+        filtered.length === 0
           ? undefined
-          : filterComponents.map((props) => {
-              return {
-                column: props.column,
-                [props.operation]: props.value,
-              };
-            }),
+          : correctFiltered as Filter[]
     };
 
     console.log(payload);
@@ -181,9 +188,10 @@ export function QueryForm({
       },
     }).then((rawRes) =>
       rawRes.json().then((res: IResponseWS) => {
-          if(rawRes.status === 200) {
-            setTableContent(res.tableContent);
-          }
+        if (rawRes.status === 200) {
+          console.log(res.tableContent);
+          setTableContent(res.tableContent);
+        }
       })
     );
   };
@@ -209,33 +217,37 @@ export function QueryForm({
             setAggregation={setAggregation}
             setAggregationColumn={setAggregationColumn}
           />
-        </Box>
 
-        <Box>
-          <h2>Filtro</h2>
-          <Stack direction="row">
-            {filterComponents.map(({ id, column, value, operation }) => (
-              <FilterComponent
-                avaibleColumns={avaibleColumns}
-                disabled={avaibleColumns.length === 0}
-                key={id}
-                columnState={column}
-                operationState={operation}
-                valueState={value}
-                dataKey={id}
-                setColumn={updateFilterComponentColumn}
-                setOperation={updateFilterComponentOperation}
-                setValue={updateFilterComponentValue}
-                removeFn={() => removeFilterForm(id)}
-              />
-            ))}
-            <IconButton onClick={addFilterForm}>
-              <AddCircleIcon />
-            </IconButton>
-          </Stack>
+          <Box>
+            <h2>Filtro</h2>
+            <Stack direction="row">
+              {filterComponents.map(({ id, column, value, operation }) => (
+                <FilterComponent
+                  avaibleColumns={avaibleColumns}
+                  disabled={avaibleColumns.length === 0}
+                  key={id}
+                  columnState={column}
+                  operationState={operation}
+                  valueState={value}
+                  dataKey={id}
+                  setColumn={updateFilterComponentColumn}
+                  setOperation={updateFilterComponentOperation}
+                  setValue={updateFilterComponentValue}
+                  removeFn={() => removeFilterForm(id)}
+                />
+              ))}
+              <IconButton onClick={addFilterForm}>
+                <AddCircleIcon />
+              </IconButton>
+            </Stack>
+          </Box>
         </Box>
       </Box>
-      <Button sx={{margin: "1rem 0"}} variant="contained" onClick={() => submitForm()}>
+      <Button
+        sx={{ margin: "1rem 0" }}
+        variant="contained"
+        onClick={() => submitForm()}
+      >
         Enviar
       </Button>
     </>

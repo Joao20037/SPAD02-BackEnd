@@ -18,7 +18,7 @@ export type Filter = {
 
 export interface IResponseWS {
     tableContent: {
-        headers: string[],
+        headers: {key: string, label: string}[],
         rows: Record<string, string>[]
     }
 }

@@ -69,8 +69,8 @@ const dynamicQuery = (requestData) => {
 };
 
 router.post('/', async (req, res) => {
-    console.log("to aqui");
-    console.log("Corpo da requisição:", req.body);
+    //console.log("to aqui");
+    //console.log("Corpo da requisição:", req.body);
     const { error, value: requestData } = requestWSSchema.validate(req.body);
 
     res.set('Access-Control-Allow-Origin', '*')
@@ -90,18 +90,20 @@ router.post('/', async (req, res) => {
             return res.json({ message: 'Nenhum resultado encontrado.' });
         }
 
+        console.log('rows is: ', rows)
+        console.log("fields is: ", fields)
+
         const responseData = {
         tableContent: {
-            headers: fields.map(field => field.name),
+            headers: fields.map(field => {
+                return {
+                    key: field.name,
+                    label: `${field.table}.${field.name}`
+                }
+            }),
             rows: rows
         }
         };
-
-        // const { error: responseError } = responseWSSchema.validate(responseData);
-        // if (responseError) {
-        // console.error('Invalid response data:', responseError.details[0].message);
-        // return res.status(500).json({ error: 'Internal Server Error' });
-        // }
 
         res.json(responseData);
     } catch (err) {

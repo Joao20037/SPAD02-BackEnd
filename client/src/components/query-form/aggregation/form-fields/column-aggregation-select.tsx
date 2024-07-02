@@ -22,7 +22,7 @@ export function ColumnAggregationSelect({
   };
 
   return (
-    <FormControl sx={{ m: 1, minWidth: 120 }} size="medium" disabled={disabled}>
+    <FormControl sx={{ m: 1, minWidth: 300 }} size="medium" disabled={disabled}>
       <InputLabel id="aggregation-column">Coluna da Agregação</InputLabel>
       <Select
         labelId="aggregation-column-label"

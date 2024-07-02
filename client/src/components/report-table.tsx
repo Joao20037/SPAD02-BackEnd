@@ -1,6 +1,4 @@
-import {
-  Box,
-} from "@mui/material";
+import { Box } from "@mui/material";
 
 import {
   DataGrid,
@@ -12,7 +10,7 @@ export function ReportTable({
   headers,
   content,
 }: {
-  headers: string[];
+  headers: { key: string; label: string }[];
   content: Record<string, string>[];
 }) {
   function CustomToolbar() {
@@ -23,19 +21,21 @@ export function ReportTable({
     );
   }
 
+  
+
   return (
     <Box>
       <DataGrid
-      checkboxSelection
+        checkboxSelection
         slots={{ toolbar: CustomToolbar }}
         rows={content.map((value, index) => {
           return {
             id: index,
-            ...value
+            ...value,
           };
         })}
-        columns={headers.map((column) => {
-          return { field: column, headerName: column, width: 150 };
+        columns={ headers.map((column) => {
+          return { field: column.label, headerName: column.label, width: 150 };
         })}
       />
     </Box>
